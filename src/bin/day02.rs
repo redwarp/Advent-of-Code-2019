@@ -5,16 +5,34 @@ fn main() {
         .iter()
         .map(|x| x.parse().unwrap())
         .collect();
-    let result = intcode(&data);
+    let result = intcode(&data, 12, 2);
 
     println!("Value at zero is {}", result[0]);
+
+    let target = 19690720;
+    let mut noun: u32 = 0;
+    let mut verb: u32 = 0;
+    for x in 0..10000 {
+        noun = x / 100;
+        verb = x % 100;
+        let result = intcode(&data, noun, verb);
+
+        if result[0] == target {
+            break;
+        }
+    }
+
+    println!(
+        "Target {} found for noon {} and verb {}",
+        target, noun, verb
+    );
 }
 
-fn intcode(source: &Vec<u32>) -> Vec<u32> {
+fn intcode(source: &Vec<u32>, noun: u32, verb: u32) -> Vec<u32> {
     let mut data = source.to_vec();
-    data[1] = 12;
-    data[2] = 2;
-    
+    data[1] = noun;
+    data[2] = verb;
+
     let mut cursor: usize = 0;
     while cursor < source.len() {
         match data[cursor] {
