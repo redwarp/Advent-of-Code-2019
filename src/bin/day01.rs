@@ -20,7 +20,7 @@ fn fuel_for_mass_with_extra(mass: i32) -> i32 {
 
 fn main() {
     println!("Mass: {}", fuel_for_mass(100756));
-    let lines: Vec<i32> = files::lines_from_file("inputs/day01.txt")
+    let lines: Vec<i32> = files::read_file_line_per_line("inputs/day01.txt")
         .iter()
         .map(|x| x.parse().unwrap())
         .collect();
