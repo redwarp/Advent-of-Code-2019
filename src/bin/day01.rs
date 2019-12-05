@@ -20,18 +20,15 @@ fn fuel_for_mass_with_extra(mass: i32) -> i32 {
 
 fn main() {
     println!("Mass: {}", fuel_for_mass(100756));
-    let lines = files::lines_from_file("inputs/day01.txt");
-    let fuel: i32 = lines
+    let lines: Vec<i32> = files::lines_from_file("inputs/day01.txt")
         .iter()
-        .map(|x| fuel_for_mass(x.parse().unwrap()))
-        .sum();
+        .map(|x| x.parse().unwrap())
+        .collect();
+    let fuel: i32 = lines.iter().fold(0, |sum, &x| sum + fuel_for_mass(x));
 
     println!("Total fuel: {}", fuel);
 
-    let fuel_with_extra: i32 = lines
-        .iter()
-        .map(|x| fuel_for_mass_with_extra(x.parse().unwrap()))
-        .sum();
+    let fuel_with_extra: i32 = lines.iter().fold(0, |sum, &x| sum + fuel_for_mass_with_extra(x));
 
     println!("Total fuel with extra fuel: {}", fuel_with_extra);
 }
