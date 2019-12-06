@@ -7,9 +7,9 @@ struct Segment {
 }
 
 impl Segment {
-    fn doesIntersect(&self, otherSegment: &Segment) -> bool {
-        if (self.is_vertical() && otherSegment.is_vertical())
-            || (!self.is_vertical() && !otherSegment.is_vertical())
+    fn does_intersect(&self, other_segment: &Segment) -> bool {
+        if (self.is_vertical() && other_segment.is_vertical())
+            || (!self.is_vertical() && !other_segment.is_vertical())
         {
             return false;
         }
@@ -19,10 +19,10 @@ impl Segment {
         match self.is_vertical() {
             true => {
                 vertical = self;
-                horizontal = otherSegment;
+                horizontal = other_segment;
             }
             false => {
-                vertical = otherSegment;
+                vertical = other_segment;
                 horizontal = self;
             }
         };
@@ -38,6 +38,40 @@ impl Segment {
             true
         } else {
             false
+        }
+    }
+
+    fn intersection(&self, other_segment: &Segment) -> (i32, i32) {
+        if (self.is_vertical() && other_segment.is_vertical())
+            || (!self.is_vertical() && !other_segment.is_vertical())
+        {
+            return (0, 0);
+        }
+        let horizontal: &Segment;
+        let vertical: &Segment;
+
+        match self.is_vertical() {
+            true => {
+                vertical = self;
+                horizontal = &other_segment;
+            }
+            false => {
+                vertical = &other_segment;
+                horizontal = self;
+            }
+        };
+
+        println!("Horizontal: {:?}", horizontal);
+        println!("Vertical: {:?}", vertical);
+
+        if horizontal.a.0 <= vertical.a.0
+            && horizontal.b.0 >= vertical.a.0
+            && horizontal.a.1 <= vertical.b.1
+            && horizontal.a.1 >= vertical.a.1
+        {
+            (vertical.a.0, horizontal.a.1)
+        } else {
+            (0, 0)
         }
     }
 
@@ -94,7 +128,7 @@ fn create_segment_from_path(origin: (i32, i32), path: &String) -> (Segment, i32,
     }
 }
 
-fn path_to_segments(paths: Vec<String>) -> Vec<Segment> {
+fn path_to_segments(paths: &Vec<String>) -> Vec<Segment> {
     let mut coords = (0, 0);
     paths
         .iter()
@@ -108,14 +142,24 @@ fn path_to_segments(paths: Vec<String>) -> Vec<Segment> {
 }
 
 fn find_distance_for_intersection(
-    first_segments: Vec<&Segment>,
-    second_segments: Vec<&Segment>,
+    first_segments: Vec<Segment>,
+    second_segments: Vec<Segment>,
 ) -> i32 {
     let mut distance = std::i32::MAX;
 
     for i in 0..first_segments.len() {
         for j in 0..second_segments.len() {
-            if (first_segments[i].doesIntersect(second_segments[j])) {}
+            if first_segments[i].does_intersect(&second_segments[j]) {
+                let intersection = first_segments[i].intersection(&second_segments[j]);
+                let intersection_distance = intersection.0.abs() + intersection.1.abs();
+                println!(
+                    "For intersection {:?}, distance of {}",
+                    intersection, intersection_distance
+                );
+                if distance > intersection_distance && intersection_distance != 0 {
+                    distance = intersection_distance;
+                }
+            }
         }
     }
 
@@ -123,18 +167,17 @@ fn find_distance_for_intersection(
 }
 
 fn main() {
-    let mut coords = (0, 0);
-
-    let first_wire: Vec<String> = "R8,U5,L5,D3"
+    let lines = files::read_file_line_per_line("inputs/day03.txt");
+    let first_wire: Vec<String> = lines[0]
         .split(',')
         .map(|path| path.to_string())
         .collect();
-    let second_wire: Vec<String> = "U7,R6,D4,L4"
+    let second_wire: Vec<String> = lines[1]
         .split(',')
         .map(|path| path.to_string())
         .collect();
 
-    println!("{:?}", path_to_segments(first_wire));
+    println!("{:?}", path_to_segments(&first_wire));
 
     let segment1 = Segment {
         a: (0, 0),
@@ -145,5 +188,11 @@ fn main() {
         b: (5, 0),
     };
 
-    println!("Intersection {:?}", segment1.doesIntersect(&segment2))
+    println!("Intersection {:?}", segment1.does_intersect(&segment2));
+    let distance = find_distance_for_intersection(
+        path_to_segments(&first_wire),
+        path_to_segments(&second_wire),
+    );
+
+    println!("Distance: {}", distance);
 }
