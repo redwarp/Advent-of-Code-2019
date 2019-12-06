@@ -1,3 +1,5 @@
+/// Probably the ugliest piece of code I ever wrote.
+
 use adventofcode::files;
 
 #[derive(Debug)]
@@ -26,9 +28,6 @@ impl Segment {
                 horizontal = self;
             }
         };
-
-        println!("Horizontal: {:?}", horizontal);
-        println!("Vertical: {:?}", vertical);
 
         if horizontal.a.0 <= vertical.a.0
             && horizontal.b.0 >= vertical.a.0
@@ -60,9 +59,6 @@ impl Segment {
                 horizontal = self;
             }
         };
-
-        println!("Horizontal: {:?}", horizontal);
-        println!("Vertical: {:?}", vertical);
 
         if horizontal.a.0 <= vertical.a.0
             && horizontal.b.0 >= vertical.a.0
