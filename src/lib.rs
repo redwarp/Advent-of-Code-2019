@@ -14,9 +14,8 @@ pub mod files {
             .collect()
     }
 
-    pub fn read_file_as_csv(filename: impl AsRef<Path>) -> Vec<String>{
-        let contents = fs::read_to_string(filename)
-        .expect("Could not read the file");
+    pub fn read_file_as_csv(filename: impl AsRef<Path>) -> Vec<String> {
+        let contents = fs::read_to_string(filename).expect("Could not read the file");
 
         contents.split(',').map(|s| s.to_string()).collect()
     }
