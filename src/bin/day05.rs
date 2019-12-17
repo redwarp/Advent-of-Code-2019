@@ -147,6 +147,7 @@ fn main() {
         .iter()
         .map(|x| x.parse().unwrap())
         .collect();
+        
     let result_1 = intcode(&data, 1);
     println!("Result 1: {:?}", result_1);
 
